@@ -1,11 +1,12 @@
 import app from "./app";
 import config from "./config";
-import { pool } from "./db";
+import { initDB, pool } from "./db";
 
 const port = config.port;
 
 const main =async () => {
   try {
+    await initDB();
     app.listen(port, () => {
       console.log(`Example app listening on port ${port}`);
     });
