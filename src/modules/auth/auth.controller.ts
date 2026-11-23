@@ -1,22 +1,41 @@
-import type { Request, Response } from "express";
+import type { Request, RequestHandler, Response } from "express";
 import sendResponse from "../../utils/sendResponse";
 import { authService } from "./auth.service";
 
-const registerUser = async (req: Request, res: Response) => {
+const registerUser: RequestHandler = async (req: Request, res: Response) => {
   try {
-    const result = await authService.registerUser(req.body);
+    const result = await authService.registerUserToDB(req.body);
     sendResponse(res, {
       statusCode: 200,
       success: true,
       message: "User registered successfully",
       data: result,
     });
-    
+  } catch (error: unknown) {
+    sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: error instanceof Error ? error.message : "Internal Server Error",
+      error: error,
+    });
+  }
+};
+
+const loginUser: RequestHandler = async (req: Request, res: Response) => {
+  try {
+    const result = await authService.loginUserToDB(req.body);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "User logged in successfully",
+      data: result,
+    });
   } catch (error: any) {
     sendResponse(res, {
       statusCode: 500,
       success: false,
-      message: error?.message,
+      message: error,
       error: error,
     });
   }
@@ -24,4 +43,5 @@ const registerUser = async (req: Request, res: Response) => {
 
 export const authController = {
   registerUser,
+  loginUser,
 };

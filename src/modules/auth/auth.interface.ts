@@ -4,3 +4,8 @@ export interface IUser {
     password: string;
     role?: "admin" | "member";
 }
+
+export interface LogInCredential {
+    email: string,
+    password: string
+}
